@@ -1,0 +1,14 @@
+{
+  "name": "opn-swap",
+  "version": "1.0.0",
+  "description": "AMM DEX on OPN Chain Testnet",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.js --network opnTestnet",
+    "dev": "npx http-server frontend -p 3000"
+  },
+  "devDependencies": {
+    "hardhat": "^2.22.0",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0"
+  }
+}

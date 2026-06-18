@@ -1,0 +1,115 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\Windows 11\\Desktop\\opn-swap\\contracts\\OPNSwapFactory.sol": {
+      "lastModificationDate": 1781797614603,
+      "contentHash": "9fc1fb6fd723f61d93fc995525fc5833",
+      "sourceName": "contracts/OPNSwapFactory.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./OPNSwapPair.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "OPNSwapFactory"
+      ]
+    },
+    "C:\\Users\\Windows 11\\Desktop\\opn-swap\\contracts\\OPNSwapPair.sol": {
+      "lastModificationDate": 1781797614650,
+      "contentHash": "2902de7c1100f72d3da4528be8418c3e",
+      "sourceName": "contracts/OPNSwapPair.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "OPNSwapPair"
+      ]
+    },
+    "C:\\Users\\Windows 11\\Desktop\\opn-swap\\contracts\\OPNToken.sol": {
+      "lastModificationDate": 1781797614697,
+      "contentHash": "3ba57506cb65261e266cbc56f20fd56c",
+      "sourceName": "contracts/OPNToken.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "OPNToken"
+      ]
+    }
+  }
+}

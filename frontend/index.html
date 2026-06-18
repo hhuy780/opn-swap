@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OPN Swap — AMM DEX on OPN Chain</title>
+  <meta name="description" content="The first AMM DEX on OPN Chain. Swap tokens, provide liquidity, earn fees." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Header -->
+<header>
+  <div class="logo">OPN Swap</div>
+  <div class="header-actions">
+    <button class="btn btn-secondary btn-sm" onclick="addOPNChain()">Add OPN Testnet</button>
+    <button class="btn btn-primary btn-sm" id="connectBtn" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="swap">Swap</button>
+    <button class="tab" data-tab="pool">Pool</button>
+    <button class="tab" data-tab="faucet">Faucet</button>
+  </div>
+
+  <!-- ════ SWAP ════ -->
+  <div class="section active" id="sec-swap">
+    <div class="card">
+      <div class="card-title">
+        <span>Swap tokens</span>
+        <div class="slippage-row">
+          <button class="btn-sm" data-slip="0.5">0.5%</button>
+          <button class="btn-sm active" data-slip="1">1%</button>
+          <button class="btn-sm" data-slip="3">3%</button>
+        </div>
+      </div>
+
+      <!-- From -->
+      <div class="token-input-wrap">
+        <div class="token-input-row">
+          <input type="text" id="swapFromAmt" placeholder="0.0" oninput="onSwapInput()" />
+          <div class="token-selector" id="swapFromToken">
+            <div class="dot" style="background:#00d4aa"></div>
+            <span>ALPHA</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <span>Balance: <span id="swapFromBal">0</span></span>
+          <button class="max-btn" onclick="setMaxFrom()">MAX</button>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="swap-arrow-wrap">
+        <div class="swap-arrow" onclick="flipTokens()">&#8595;</div>
+      </div>
+
+      <!-- To -->
+      <div class="token-input-wrap">
+        <div class="token-input-row">
+          <input type="text" id="swapToAmt" placeholder="0.0" readonly />
+          <div class="token-selector" id="swapToToken">
+            <div class="dot" style="background:#4a9eff"></div>
+            <span>BETA</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <span>Balance: <span id="swapToBal">0</span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="info-rows" id="swapInfo" style="display:none">
+        <div class="info-row"><span>Price</span><span id="swapPrice">—</span></div>
+        <div class="info-row"><span>Price Impact</span><span id="swapImpact">—</span></div>
+        <div class="info-row"><span>Fee</span><span>0.3%</span></div>
+        <div class="info-row"><span>Min Received</span><span id="swapMin">—</span></div>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="swapBtn" style="margin-top:16px" disabled onclick="doSwap()">
+        Enter an amount
+      </button>
+    </div>
+  </div>
+
+  <!-- ════ POOL ════ -->
+  <div class="section" id="sec-pool">
+    <div class="card">
+      <div class="card-title"><span>Liquidity Pool</span></div>
+
+      <div class="pool-stats">
+        <div class="pool-stat">
+          <div class="pool-stat-value" id="poolRes0">0</div>
+          <div class="pool-stat-label">ALPHA reserve</div>
+        </div>
+        <div class="pool-stat">
+          <div class="pool-stat-value" id="poolRes1">0</div>
+          <div class="pool-stat-label">BETA reserve</div>
+        </div>
+        <div class="pool-stat">
+          <div class="pool-stat-value" id="poolLP">0</div>
+          <div class="pool-stat-label">Your LP tokens</div>
+        </div>
+        <div class="pool-stat">
+          <div class="pool-stat-value" id="poolShare">0%</div>
+          <div class="pool-stat-label">Pool share</div>
+        </div>
+      </div>
+
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Add liquidity</p>
+      <div class="token-input-wrap" style="margin-bottom:8px">
+        <div class="token-input-row">
+          <input type="text" id="addAmt0" placeholder="0.0" oninput="onAddInput(0)" />
+          <div class="token-selector"><div class="dot" style="background:#00d4aa"></div><span>ALPHA</span></div>
+        </div>
+      </div>
+      <div class="token-input-wrap">
+        <div class="token-input-row">
+          <input type="text" id="addAmt1" placeholder="0.0" oninput="onAddInput(1)" />
+          <div class="token-selector"><div class="dot" style="background:#4a9eff"></div><span>BETA</span></div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="doAddLiquidity()">Add Liquidity</button>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:20px 0" />
+
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Remove liquidity</p>
+      <div class="slider-wrap">
+        <input type="range" id="removePct" min="0" max="100" value="0" oninput="onRemoveSlider()" />
+        <div style="text-align:center;margin-top:4px;font-weight:700" id="removePctLabel">0%</div>
+      </div>
+      <div class="pct-btns">
+        <button onclick="setRemovePct(25)">25%</button>
+        <button onclick="setRemovePct(50)">50%</button>
+        <button onclick="setRemovePct(75)">75%</button>
+        <button onclick="setRemovePct(100)">100%</button>
+      </div>
+      <button class="btn btn-secondary btn-full" style="margin-top:12px" onclick="doRemoveLiquidity()">Remove Liquidity</button>
+    </div>
+  </div>
+
+  <!-- ════ FAUCET ════ -->
+  <div class="section" id="sec-faucet">
+    <div class="card">
+      <div class="card-title"><span>Test Token Faucet</span></div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">
+        Get free test tokens to try OPN Swap. Max 10,000 per request.
+      </p>
+      <div class="faucet-grid">
+        <div class="faucet-card">
+          <div class="faucet-token-info">
+            <div class="dot" style="background:#00d4aa"></div>
+            <div>
+              <div class="faucet-token-name">ALPHA</div>
+              <div class="faucet-token-bal">Balance: <span id="faucetBalA">0</span></div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="claimFaucet('A')">Get 1,000</button>
+        </div>
+        <div class="faucet-card">
+          <div class="faucet-token-info">
+            <div class="dot" style="background:#4a9eff"></div>
+            <div>
+              <div class="faucet-token-name">BETA</div>
+              <div class="faucet-token-bal">Balance: <span id="faucetBalB">0</span></div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="claimFaucet('B')">Get 1,000</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Built on <a href="https://testnet.iopn.tech" target="_blank">OPN Chain Testnet</a> &middot; Season 1: DeFi &amp; Open Finance
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+<script src="js/contracts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

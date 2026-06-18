@@ -1,0 +1,274 @@
+/* ── OPN Swap – Dark DeFi Theme ───────────────────────── */
+:root {
+  --bg:        #0b0e14;
+  --surface:   #141821;
+  --card:      #1a1f2e;
+  --border:    #262d3d;
+  --text:      #e1e4ea;
+  --muted:     #7a8299;
+  --accent:    #00d4aa;
+  --accent-dim:#00d4aa33;
+  --warn:      #f5a623;
+  --danger:    #ff4757;
+  --blue:      #4a9eff;
+  --radius:    12px;
+  --font:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+header {
+  width: 100%; max-width: 1100px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.logo {
+  font-size: 20px; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.header-actions { display: flex; gap: 10px; align-items: center; }
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btn {
+  border: none; border-radius: var(--radius); cursor: pointer;
+  font-family: var(--font); font-weight: 600; font-size: 14px;
+  padding: 10px 18px; transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--accent); color: #0b0e14;
+}
+.btn-primary:hover { filter: brightness(1.15); }
+.btn-primary:disabled {
+  background: var(--border); color: var(--muted); cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--card); color: var(--text); border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--accent); }
+
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+
+.btn-full { width: 100%; padding: 14px; font-size: 16px; border-radius: var(--radius); }
+
+/* ── Tabs ────────────────────────────────────────────── */
+.tabs {
+  display: flex; gap: 4px; background: var(--surface); border-radius: var(--radius);
+  padding: 4px; margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1; text-align: center; padding: 10px 20px; border-radius: 10px;
+  cursor: pointer; font-weight: 600; font-size: 14px;
+  color: var(--muted); transition: all 0.2s; border: none; background: none;
+  font-family: var(--font);
+}
+
+.tab.active { background: var(--card); color: var(--text); }
+.tab:hover:not(.active) { color: var(--text); }
+
+/* ── Main card ───────────────────────────────────────── */
+main {
+  width: 100%; max-width: 480px; padding: 0 16px; margin-top: 20px;
+}
+
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px;
+}
+
+.card-title {
+  font-size: 14px; color: var(--muted); margin-bottom: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+/* ── Token input ─────────────────────────────────────── */
+.token-input-wrap {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 4px;
+}
+
+.token-input-row {
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.token-input-row input {
+  background: none; border: none; color: var(--text);
+  font-size: 24px; font-weight: 600; width: 60%; outline: none;
+  font-family: var(--font);
+}
+
+.token-input-row input::placeholder { color: var(--muted); }
+
+.token-selector {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 6px 12px; cursor: pointer;
+  font-weight: 600; font-size: 14px;
+}
+
+.token-selector .dot {
+  width: 20px; height: 20px; border-radius: 50%;
+}
+
+.token-balance {
+  display: flex; justify-content: space-between; margin-top: 8px;
+  font-size: 12px; color: var(--muted);
+}
+
+.token-balance .max-btn {
+  color: var(--accent); cursor: pointer; font-weight: 600;
+  background: none; border: none; font-family: var(--font); font-size: 12px;
+}
+
+/* ── Swap arrow ──────────────────────────────────────── */
+.swap-arrow-wrap {
+  display: flex; justify-content: center; margin: -8px 0;
+  position: relative; z-index: 2;
+}
+
+.swap-arrow {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--card); border: 3px solid var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: transform 0.2s; font-size: 16px;
+}
+
+.swap-arrow:hover { transform: rotate(180deg); }
+
+/* ── Info rows ───────────────────────────────────────── */
+.info-rows {
+  margin-top: 12px; padding: 12px; background: var(--surface);
+  border-radius: var(--radius); font-size: 13px;
+}
+
+.info-row {
+  display: flex; justify-content: space-between; padding: 4px 0;
+  color: var(--muted);
+}
+
+.info-row span:last-child { color: var(--text); }
+
+.price-impact-warn { color: var(--warn) !important; }
+.price-impact-danger { color: var(--danger) !important; }
+
+/* ── Pool section ────────────────────────────────────── */
+.pool-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pool-stat {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 12px; text-align: center;
+}
+
+.pool-stat-value { font-size: 18px; font-weight: 700; }
+.pool-stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.slider-wrap { margin: 16px 0; }
+.slider-wrap input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+.pct-btns { display: flex; gap: 6px; margin-top: 8px; }
+.pct-btns button {
+  flex: 1; padding: 6px; border-radius: 8px; font-size: 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer; font-family: var(--font);
+}
+.pct-btns button:hover { border-color: var(--accent); }
+
+/* ── Faucet ──────────────────────────────────────────── */
+.faucet-grid { display: grid; gap: 12px; }
+
+.faucet-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 16px; display: flex; justify-content: space-between;
+  align-items: center;
+}
+
+.faucet-token-info { display: flex; align-items: center; gap: 10px; }
+
+.faucet-token-info .dot {
+  width: 32px; height: 32px; border-radius: 50%;
+}
+
+.faucet-token-name { font-weight: 600; }
+.faucet-token-bal  { font-size: 12px; color: var(--muted); }
+
+/* ── Slippage ────────────────────────────────────────── */
+.slippage-row {
+  display: flex; gap: 6px; align-items: center;
+}
+
+.slippage-row button {
+  padding: 4px 10px; border-radius: 8px; font-size: 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; font-family: var(--font);
+}
+.slippage-row button.active {
+  border-color: var(--accent); color: var(--accent);
+}
+
+/* ── Toast ───────────────────────────────────────────── */
+#toast-container {
+  position: fixed; top: 20px; right: 20px; z-index: 999;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.toast {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 16px;
+  font-size: 13px; min-width: 280px; animation: fadeIn 0.3s;
+}
+
+.toast a { color: var(--accent); text-decoration: none; }
+.toast.success { border-left: 3px solid var(--accent); }
+.toast.error   { border-left: 3px solid var(--danger); }
+.toast.pending { border-left: 3px solid var(--warn); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; } }
+
+/* ── Footer ──────────────────────────────────────────── */
+footer {
+  margin-top: auto; padding: 40px 20px 20px;
+  text-align: center; font-size: 12px; color: var(--muted);
+}
+
+footer a { color: var(--accent); text-decoration: none; }
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 520px) {
+  header { padding: 16px; }
+  main { padding: 0 12px; }
+  .token-input-row input { font-size: 20px; }
+}
+
+/* ── Section visibility ─────────────────────────────── */
+.section { display: none; }
+.section.active { display: block; }
+
+/* ── Loading spinner ─────────────────────────────────── */
+.spinner {
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hidden { display: none !important; }

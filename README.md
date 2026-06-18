@@ -1,147 +1,191 @@
-# OPN Swap – AMM DEX on OPN Chain
+# OPN Swap
 
-The first constant-product AMM on OPN Chain. Swap tokens, provide liquidity, earn fees.
+**The first constant-product AMM DEX on OPN Chain.** Swap tokens, provide liquidity, and earn fees — fully on-chain, no backend, no intermediaries.
 
 ---
 
-## Quick Start (Dành cho người không biết code)
+## Overview
 
-### Bước 0: Cài đặt cơ bản
+OPN Swap is a fully functional Automated Market Maker (AMM) decentralized exchange deployed on OPN Chain Testnet. It implements the constant-product formula (`x · y = k`) — the same mathematical foundation behind Uniswap V1/V2 — purpose-built for the OPN ecosystem.
 
-1. Cài [Node.js](https://nodejs.org/) (chọn bản LTS, cứ Next → Next → Install)
-2. Cài [MetaMask](https://metamask.io/) extension trên Chrome
-3. Vào trang [https://builders.iopn.tech/connect](https://builders.iopn.tech/connect) → Connect wallet + Discord để tạo builder profile
+### Core Capabilities
 
-### Bước 1: Lấy IOPN testnet (gas fee)
+- **Token Swapping** — 0.3% LP fee, configurable slippage protection (0.5% / 1% / 3%), real-time price impact display
+- **Liquidity Pools** — Deposit token pairs, receive LP tokens representing your proportional share
+- **Built-in Faucet** — Claim free test tokens instantly, no external faucet needed
+- **Factory Pattern** — Supports creating unlimited token pairs, making the protocol extensible
 
-- Vào Discord IOPn, tìm channel **#faucet**
-- Gõ lệnh faucet hoặc làm theo hướng dẫn để nhận IOPN testnet miễn phí
-- Hoặc tìm trên trang IOPn có mục faucet
+Every transaction (swaps, liquidity additions, removals) is confirmed on-chain. No off-chain computation, no oracles, no trusted intermediaries.
 
-### Bước 2: Thêm OPN Testnet vào MetaMask
+---
 
-Mở MetaMask → Settings → Networks → Add Network:
+## How It Works
 
-| Field | Value |
-|-------|-------|
-| Network Name | OPN Chain Testnet |
-| RPC URL | `https://testnet-rpc.iopn.tech` |
-| Chain ID | `984` |
-| Currency Symbol | `IOPN` |
-| Block Explorer | `https://testnet.iopn.tech` |
+1. **Liquidity Providers** deposit equal-value amounts of two tokens into a pool and receive LP tokens proportional to their share.
+2. **Traders** swap one token for another. The contract calculates output using:
+   ```
+   amountOut = (reserveOut × amountIn × 997) / (reserveIn × 1000 + amountIn × 997)
+   ```
+   This enforces the constant-product invariant while collecting a 0.3% fee.
+3. **LP Token Holders** can burn their LP tokens at any time to withdraw their proportional share of both reserves, including accumulated fees.
 
-### Bước 3: Tải và cài đặt project
+The 0.3% swap fee stays in the pool and is distributed pro-rata to all liquidity providers.
 
-Mở Terminal (hoặc Command Prompt trên Windows):
+---
+
+## Smart Contracts
+
+| Contract | Purpose |
+|----------|---------|
+| `OPNToken.sol` | ERC-20 token with public faucet (max 10,000 per call) |
+| `OPNSwapPair.sol` | Constant-product AMM pool (`x · y = k`), 0.3% fee, LP token minting/burning |
+| `OPNSwapFactory.sol` | Creates and indexes token pair pools |
+
+**Security:** ReentrancyGuard + Checks-Effects-Interactions pattern. Solidity 0.8.20 with built-in overflow protection.
+
+---
+
+## Project Structure
+
+```
+opn-swap/
+├── contracts/
+│   ├── OPNToken.sol          # ERC-20 token + faucet
+│   ├── OPNSwapPair.sol       # AMM pool
+│   └── OPNSwapFactory.sol    # Pair factory
+├── frontend/
+│   ├── index.html
+│   ├── css/style.css
+│   └── js/
+│       ├── app.js            # UI logic
+│       └── contracts.js      # Contract addresses & ABIs
+├── scripts/
+│   └── deploy.js             # Automated deployment script
+├── hardhat.config.js
+└── package.json
+```
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- [MetaMask](https://metamask.io/) browser extension
+
+### 1. Install Dependencies
 
 ```bash
-# Clone hoặc giải nén project
+git clone https://github.com/hhuy780/opn-swap.git
 cd opn-swap
-
-# Cài dependencies
 npm install
 ```
 
-### Bước 4: Deploy smart contracts
+### 2. Configure Network
+
+Add OPN Chain Testnet to MetaMask:
+
+| Field            | Value                              |
+|------------------|------------------------------------|
+| Network Name     | OPN Chain Testnet                  |
+| RPC URL          | `https://testnet-rpc.iopn.tech`    |
+| Chain ID         | `984`                              |
+| Currency Symbol  | `IOPN`                             |
+| Block Explorer   | `https://testnet.iopn.tech`        |
+
+### 3. Get Test Tokens
+
+Request IOPN testnet tokens from the **#faucet** channel on the IOPn Discord server.
+
+### 4. Deploy Contracts
 
 ```bash
-# Set private key (LẤY TỪ METAMASK: Account Details → Export Private Key)
-# ⚠️ KHÔNG BAO GIỜ share private key với ai!
-
-# Windows CMD:
-set PRIVATE_KEY=0xYOUR_PRIVATE_KEY_HERE
-
-# Mac/Linux:
+# Set your MetaMask private key
 export PRIVATE_KEY=0xYOUR_PRIVATE_KEY_HERE
 
-# Deploy
+# Compile and deploy
+npm run compile
 npm run deploy
 ```
 
-Sau khi chạy xong, terminal sẽ hiện ra 4 địa chỉ contract. Ví dụ:
-```
-══════════════════════════════════════════
-  DEPLOYMENT COMPLETE - Copy to contracts.js:
-══════════════════════════════════════════
-  factory: "0x1234...",
-  tokenA:  "0x5678...",
-  tokenB:  "0x9abc...",
-  pair:    "0xdef0...",
-══════════════════════════════════════════
-```
-
-### Bước 5: Cập nhật địa chỉ vào frontend
-
-Mở file `frontend/js/contracts.js` bằng bất kỳ text editor nào (Notepad, VS Code...)
-
-Thay thế 4 dòng `0x0000...` bằng 4 địa chỉ bạn vừa deploy:
+After deployment, copy the printed contract addresses into `frontend/js/contracts.js`:
 
 ```javascript
 const ADDRESSES = {
-  factory: "0x... (dán địa chỉ factory ở đây)",
-  tokenA:  "0x... (dán địa chỉ tokenA ở đây)",
-  tokenB:  "0x... (dán địa chỉ tokenB ở đây)",
-  pair:    "0x... (dán địa chỉ pair ở đây)",
+  factory: "0x...",
+  tokenA:  "0x...",
+  tokenB:  "0x...",
+  pair:    "0x...",
 };
 ```
 
-### Bước 6: Test trên máy
+### 5. Run Locally
 
 ```bash
 npm run dev
 ```
 
-Mở trình duyệt, vào `http://localhost:3000` → Connect MetaMask → Thử Faucet → Swap!
-
-### Bước 7: Deploy frontend lên Vercel
-
-1. Vào [vercel.com](https://vercel.com) → Sign up bằng GitHub
-2. Đẩy code lên GitHub (tạo repo mới, push code lên)
-3. Trên Vercel: Import Git Repository → chọn repo vừa tạo
-4. Settings:
-   - **Root Directory**: `frontend`
-   - **Framework Preset**: Other
-5. Deploy!
-
-Vercel sẽ cho bạn link dạng `https://opn-swap-xxx.vercel.app`
-
-### Bước 8: Submit trên IOPn Builders
-
-1. Vào [https://builders.iopn.tech/dashboard/submit](https://builders.iopn.tech/dashboard/submit)
-2. Điền thông tin (dùng nội dung trong file SUBMISSION.md bên dưới)
-3. Dán link live demo (Vercel URL)
-4. Dán link source code (GitHub URL)
-5. Submit!
+Open `http://localhost:3000` in your browser, connect MetaMask, and start swapping.
 
 ---
 
-## Cấu trúc project
+## Deployment
 
-```
-opn-swap/
-├── contracts/           # Smart contracts Solidity
-│   ├── OPNToken.sol     # ERC-20 token + faucet
-│   ├── OPNSwapPair.sol  # AMM pool (x·y=k)
-│   └── OPNSwapFactory.sol
-├── frontend/            # Giao diện web
-│   ├── index.html
-│   ├── css/style.css
-│   └── js/
-│       ├── app.js
-│       └── contracts.js # ← CẬP NHẬT ĐỊA CHỈ Ở ĐÂY
-├── scripts/
-│   └── deploy.js        # Script deploy tự động
-├── hardhat.config.js
-└── package.json
-```
+### Frontend (Vercel)
 
-## Contracts
+1. Push the repository to GitHub
+2. Go to [vercel.com](https://vercel.com) and sign in with GitHub
+3. Import the `opn-swap` repository
+4. Set **Root Directory** to `frontend`
+5. Set **Framework Preset** to `Other`
+6. Click **Deploy**
 
-| Contract | Purpose |
-|----------|---------|
-| **OPNToken** | ERC-20 token with public faucet (max 10,000/call) |
-| **OPNSwapPair** | Constant-product AMM (x·y=k), 0.3% fee, LP tokens |
-| **OPNSwapFactory** | Creates and indexes token pair pools |
+### Submission
+
+After deploying, submit your project at [builders.iopn.tech/dashboard/submit](https://builders.iopn.tech/dashboard/submit) with:
+- Live demo URL (Vercel)
+- Source code URL (GitHub)
+
+---
+
+## Tech Stack
+
+- **Solidity** 0.8.20
+- **Hardhat** — compilation, testing, deployment
+- **ethers.js** v6 — frontend contract interaction
+- **HTML / CSS / JavaScript** — zero-framework frontend, no build step required
+- **OPN Chain Testnet** (Chain ID: 984)
+
+---
+
+## Roadmap
+
+### Q2 2026 — MVP (Current)
+- Core AMM contracts on OPN Chain Testnet
+- Swap interface with real-time quotes
+- Liquidity pool management UI
+- Built-in faucet for test tokens
+
+### Q3 2026 — Multi-pair & Analytics
+- Router contract for multi-hop swaps (A → B → C)
+- Token list registry for community-curated metadata
+- Analytics dashboard: TVL, volume, fees per pool
+- Subgraph indexer for historical trade data
+
+### Q4 2026 — Yield & Governance
+- Liquidity mining with governance token
+- Fee-sharing mechanism
+- Governance voting for fee parameters and token listings
+- Mobile-optimized PWA
+
+### 2027 — Advanced AMM
+- Concentrated liquidity (Uniswap V3-style)
+- Limit orders via on-chain order book hybrid
+- Cross-chain bridge integration
+- Mainnet deployment
+
+---
 
 ## License
 
